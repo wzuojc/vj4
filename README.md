@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/vijos/vj4" target="_blank"><img src="https://img.shields.io/travis/soha/vj4/ojc.svg?style=flat-square"></a>
-  <a href="https://raw.githubusercontent.com/vijos/vj4/master/LICENSE" target="_blank"><img src="https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square"></a>
+  <a href="https://travis-ci.org/moesoha/vj4" target="_blank"><img src="https://img.shields.io/travis/soha/vj4/ojc.svg?style=flat-square"></a>
+  <a href="https://raw.githubusercontent.com/moesoha/vj4/master/LICENSE" target="_blank"><img src="https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square"></a>
 </p>
 
 <p align="center">
