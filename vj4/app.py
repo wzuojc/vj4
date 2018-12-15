@@ -68,6 +68,7 @@ class Application(web.Application):
     from vj4.handler import training
     from vj4.handler import user
     from vj4.handler import i18n
+    from vj4.handler import ojc_connect
     if options.static:
       self.router.add_static('/', static_path, name='static')
 

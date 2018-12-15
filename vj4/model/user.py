@@ -64,6 +64,12 @@ async def get_by_uid(uid: int, fields=PROJECTION_VIEW):
 
 
 @argmethod.wrap
+async def get_by_ojcId(ojcId: int, fields=PROJECTION_VIEW):
+  coll = db.coll('user')
+  return await coll.find_one({'ojcId': ojcId}, fields)
+
+
+@argmethod.wrap
 async def get_by_uname(uname: str, fields=PROJECTION_VIEW):
   """Get a user by uname."""
   uname_lower = uname.strip().lower()
