@@ -717,3 +717,4 @@ The link will be expired at {0}: 链接将于 {0} 过期
 By clicking the button, you will become a member of the domain {0}.: 点击按钮，您将成为域 {0} 的成员。
 You need to enter the invitation code to join the domain.: 您需要输入邀请码来加入此域。
 Join: 加入
+'Failed to connect to third party: {0}.': 连接到第三方应用 {0} 失败。
