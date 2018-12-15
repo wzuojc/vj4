@@ -32,6 +32,9 @@ class OujiangCollegeUnifiedAuthClient(OAuth2Client):
     yield 'id', data.get('data').get('id')
     yield 'username', data.get('data').get('username')
 
+def random_string(n: int):
+  return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(n))
+
 
 @app.route('/ojc/connect/uniauth', 'ojc_connect_uniauth', global_route=True)
 class ConnectUnifiedAuthHandler(base.Handler):
@@ -40,8 +43,13 @@ class ConnectUnifiedAuthHandler(base.Handler):
     client.params['redirect_uri'] = ojc_uniauth_client_params['redirect_uri']
     client.params['scope'] = ojc_uniauth_client_params['scope']
     if client.shared_key not in self.request.query:
+      client.params['state'] = random_string(8)
+      await self.update_session(oauth_ojc_state=client.params['state'])
       self.redirect(client.get_authorize_url())
       return
+
+    if self.session.get('oauth_ojc_state') != self.request.query.get('state'):
+      raise error.ThirdPartyConnectError(client.name, 'state {} doesn\'t match {}'.format(self.request.query.get('state'), self.session.get('oauth_ojc_state')))
 
     try:
       await client.get_access_token(self.request.query)
@@ -58,7 +66,7 @@ class ConnectUnifiedAuthHandler(base.Handler):
                            self.update_session(uid=udoc['_id']))
     else:
       uid = int(ojcUser['schoolId']) if ojcUser['schoolId'].isnumeric() else await system.inc_user_counter()
-      password = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
+      password = random_string(16)
       await user.add(uid, ojcUser['username'], password, '{}@auth.iojc.cn'.format(ojcUser['schoolId']), self.remote_ip)
       await user.set_by_uid(uid, ojcId=ojcUser['schoolId'])
       await self.update_session(new_saved=False, uid=uid)

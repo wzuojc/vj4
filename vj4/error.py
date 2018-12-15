@@ -377,4 +377,4 @@ class SendMailError(UserFacingError):
 class ThirdPartyConnectError(UserFacingError):
   @property
   def message(self):
-    return 'Failed to connect to third party: {0}.'
+    return 'Failed to connect to third party {0}, please try again.'
