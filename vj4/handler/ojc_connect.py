@@ -10,21 +10,19 @@ from vj4 import error
 from vj4.model import user
 from vj4.handler import base
 from vj4.model import system
+from vj4.util import options
 
-
-ojc_uniauth_client_params = {
-  'client_id': '59f0ad47-ff6a-11e8-8ebc-2c534a035500_qj88wvsi8i880ss8k8gwc0kog8o4ckc0ok484s80g08w0gsc8',
-  'client_secret': '40gv91hljp8g8ow0gsgos4gs44sc484cwkss00sk8o84ggwo4s',
-  'redirect_uri': 'http://10.11.99.13/ojc/connect/uniauth',
-  'scope': 'authorization_code user:info.basic app:internal_access.full'
-}
 
 class OujiangCollegeUnifiedAuthClient(OAuth2Client):
-  access_token_url = 'http://10.11.99.9:8016/oauth/v2/token'
-  authorize_url = 'http://10.11.99.9:8016/oauth/v2/auth'
-  base_url = 'http://10.11.99.9:8016/'
-  name = 'ojc_unified_auth'
-  user_info_url = 'http://10.11.99.9:8016/api/oauth/user/info.basic'
+  def __init__(self):
+    self.access_token_url = '{}/oauth/v2/token'.format(options.ojc_connect_uniauth_base_url)
+    self.authorize_url = '{}/oauth/v2/auth'.format(options.ojc_connect_uniauth_base_url)
+    self.base_url = format(options.ojc_connect_uniauth_base_url) + '/'
+    self.name = 'ojc_unified_auth'
+    self.user_info_url = '{}/api/oauth/user/info.basic'.format(options.ojc_connect_uniauth_base_url)
+    super().__init__(client_id=options.ojc_connect_uniauth_client_id, client_secret=options.ojc_connect_uniauth_client_secret)
+    self.params['redirect_uri'] = '{}/ojc/connect/uniauth'.format(options.url_prefix)
+    self.params['scope'] = options.ojc_connect_uniauth_scope
 
   @staticmethod
   def user_parse(data):
@@ -39,9 +37,7 @@ def random_string(n: int):
 @app.route('/ojc/connect/uniauth', 'ojc_connect_uniauth', global_route=True)
 class ConnectUnifiedAuthHandler(base.Handler):
   async def get(self):
-    client = OujiangCollegeUnifiedAuthClient(client_id=ojc_uniauth_client_params['client_id'], client_secret=ojc_uniauth_client_params['client_secret']);
-    client.params['redirect_uri'] = ojc_uniauth_client_params['redirect_uri']
-    client.params['scope'] = ojc_uniauth_client_params['scope']
+    client = OujiangCollegeUnifiedAuthClient()
     if client.shared_key not in self.request.query:
       client.params['state'] = random_string(8)
       await self.update_session(oauth_ojc_state=client.params['state'])
@@ -67,7 +63,7 @@ class ConnectUnifiedAuthHandler(base.Handler):
     else:
       uid = int(ojcUser['schoolId']) if ojcUser['schoolId'].isnumeric() else await system.inc_user_counter()
       password = random_string(16)
-      await user.add(uid, ojcUser['username'], password, '{}@auth.iojc.cn'.format(ojcUser['schoolId']), self.remote_ip)
+      await user.add(uid, ojcUser['username'], password, '{}@me.iojc.cn'.format(ojcUser['schoolId']), self.remote_ip)
       await user.set_by_uid(uid, ojcId=ojcUser['schoolId'])
       await self.update_session(new_saved=False, uid=uid)
 

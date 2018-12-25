@@ -35,6 +35,11 @@ options.define('changemail_token_expire_seconds', default=3600,
 options.define('url_prefix', default='https://vijos.org', help='URL prefix.')
 options.define('cdn_prefix', default='/', help='CDN prefix.')
 
+options.define('ojc_connect_uniauth_client_id', default='')
+options.define('ojc_connect_uniauth_client_secret', default='')
+options.define('ojc_connect_uniauth_scope', default='authorization_code user:info.basic app:internal_access.full')
+options.define('ojc_connect_uniauth_base_url', default='https://me.iojc.cn')
+
 _logger = logging.getLogger(__name__)
 
 
