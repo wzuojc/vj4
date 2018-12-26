@@ -51,10 +51,12 @@ class Application(web.Application):
   def __init__(self):
     super(Application, self).__init__(
       debug=options.debug,
-      middlewares=(SentryMiddleware({
-        'dsn': options.sentry_integration_dsn,
-        'environment': 'vj4:ojc'
-      }))
+      middlewares=[
+        SentryMiddleware({
+          'dsn': options.sentry_integration_dsn,
+          'environment': 'vj4:ojc'
+        })
+      ]
     )
     globals()[self.__class__.__name__] = lambda: self  # singleton
 
