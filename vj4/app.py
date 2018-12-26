@@ -5,7 +5,7 @@ from os import path
 
 import sockjs
 from aiohttp import web
-from aiohttp_sentry import SentryMiddleware
+from aiohttp_sentry import SentryMiddleware as SentryMiddlewareOriginal
 
 from vj4 import db
 from vj4 import error
@@ -42,6 +42,23 @@ options.define('ojc_connect_uniauth_scope', default='authorization_code user:inf
 options.define('ojc_connect_uniauth_base_url', default='https://me.iojc.cn')
 
 options.define('sentry_integration_dsn', default='')
+
+
+class SentryMiddleware(SentryMiddlewareOriginal):
+  async def get_extra_data(self, request):
+    return {
+      'request': {
+        'query_string': request.query_string,
+        'cookies': request.headers.get('Cookie', ''),
+        'headers': dict(request.headers),
+        'url': request.path,
+        'method': request.method,
+        'scheme': request.scheme,
+        'env': {
+          'REMOTE_ADDR': request.headers.get(options.ip_header) if options.ip_header else request.transport.get_extra_info('peername')[0]
+        }
+      }
+    }
 
 
 _logger = logging.getLogger(__name__)
