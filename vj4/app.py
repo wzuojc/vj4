@@ -17,6 +17,9 @@ from vj4.util import locale
 from vj4.util import options
 from vj4.util import tools
 
+import sentry_sdk
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+
 options.define('debug', default=False, help='Enable debug mode.')
 options.define('static', default=True, help='Serve static files.')
 options.define('ip_header', default='', help='Header name for remote IP.')
@@ -39,6 +42,13 @@ options.define('ojc_connect_uniauth_client_id', default='')
 options.define('ojc_connect_uniauth_client_secret', default='')
 options.define('ojc_connect_uniauth_scope', default='authorization_code user:info.basic app:internal_access.full')
 options.define('ojc_connect_uniauth_base_url', default='https://me.iojc.cn')
+
+options.define('sentry_integration_dsn', default='')
+
+sentry_sdk.init(
+    dsn=options.sentry_integration_dsn,
+    integrations=[AioHttpIntegration()]
+)
 
 _logger = logging.getLogger(__name__)
 
