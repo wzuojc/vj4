@@ -4,7 +4,6 @@ import logging
 from os import path
 
 import sockjs
-from aiohttp import web
 
 from vj4 import db
 from vj4 import error
@@ -49,6 +48,8 @@ sentry_sdk.init(
     dsn=options.sentry_integration_dsn,
     integrations=[AioHttpIntegration()]
 )
+
+from aiohttp import web
 
 _logger = logging.getLogger(__name__)
 
