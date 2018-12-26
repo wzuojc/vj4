@@ -4,6 +4,8 @@ import logging
 from os import path
 
 import sockjs
+from aiohttp import web
+from aiohttp_sentry import SentryMiddleware
 
 from vj4 import db
 from vj4 import error
@@ -15,9 +17,6 @@ from vj4.util import json
 from vj4.util import locale
 from vj4.util import options
 from vj4.util import tools
-
-import sentry_sdk
-from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 
 options.define('debug', default=False, help='Enable debug mode.')
 options.define('static', default=True, help='Serve static files.')
@@ -44,19 +43,19 @@ options.define('ojc_connect_uniauth_base_url', default='https://me.iojc.cn')
 
 options.define('sentry_integration_dsn', default='')
 
-sentry_sdk.init(
-    dsn=options.sentry_integration_dsn,
-    integrations=[AioHttpIntegration()]
-)
-
-from aiohttp import web
 
 _logger = logging.getLogger(__name__)
 
 
 class Application(web.Application):
   def __init__(self):
-    super(Application, self).__init__(debug=options.debug)
+    super(Application, self).__init__(
+      debug=options.debug,
+      middlewares=(SentryMiddleware({
+        'dsn': options.sentry_integration_dsn,
+        'environment': 'vj4:ojc'
+      }))
+    )
     globals()[self.__class__.__name__] = lambda: self  # singleton
 
     static_path = path.join(path.dirname(__file__), '.uibuild')
