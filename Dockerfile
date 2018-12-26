@@ -6,7 +6,7 @@ RUN npm install \
     && npm run build:production
 
 # main
-FROM python:3.7-stretch
+FROM python:3.6-stretch
 COPY --from=stage-node /app/src /app/src
 WORKDIR /app/src
 
