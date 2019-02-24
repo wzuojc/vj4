@@ -14,7 +14,6 @@ from vj4.service import bus
 from vj4.service import smallcache
 from vj4.service import staticmanifest
 from vj4.util import json
-from vj4.util import locale
 from vj4.util import options
 from vj4.util import tools
 
@@ -78,11 +77,9 @@ class Application(web.Application):
     globals()[self.__class__.__name__] = lambda: self  # singleton
 
     static_path = path.join(path.dirname(__file__), '.uibuild')
-    translation_path = path.join(path.dirname(__file__), 'locale')
 
     # Initialize components.
     staticmanifest.init(static_path)
-    locale.load_translations(translation_path)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(db.init())
     loop.run_until_complete(system.setup())
@@ -96,6 +93,7 @@ class Application(web.Application):
     from vj4.handler import domain
     from vj4.handler import fs
     from vj4.handler import home
+    from vj4.handler import homework
     from vj4.handler import judge
     from vj4.handler import misc
     from vj4.handler import problem
@@ -141,7 +139,7 @@ def connection_route(prefix, name, global_route=False):
       def __init__(self, *args):
         super(Manager, self).__init__(*args)
         self.factory = conn
-        self.timeout = datetime.timedelta(60)
+        self.timeout = datetime.timedelta(seconds=60)
 
     loop = asyncio.get_event_loop()
     sockjs.add_endpoint(Application(), handler, name=name, prefix=prefix,
