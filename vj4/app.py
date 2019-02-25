@@ -3,9 +3,9 @@ import datetime
 import logging
 from os import path
 
+import aiohttp_sentry
 import sockjs
 from aiohttp import web
-from aiohttp_sentry import SentryMiddleware as SentryMiddlewareOriginal
 
 from vj4 import db
 from vj4 import error
@@ -34,45 +34,45 @@ options.define('changemail_token_expire_seconds', default=3600,
                help='Expire time for changemail token, in seconds.')
 options.define('url_prefix', default='https://vijos.org', help='URL prefix.')
 options.define('cdn_prefix', default='/', help='CDN prefix.')
+options.define('sentry_dsn', default='', help='Sentry integration DSN.')
 
 options.define('ojc_connect_uniauth_client_id', default='')
 options.define('ojc_connect_uniauth_client_secret', default='')
 options.define('ojc_connect_uniauth_scope', default='authorization_code user:info.basic app:internal_access.full')
 options.define('ojc_connect_uniauth_base_url', default='https://me.iojc.cn')
 
-options.define('sentry_integration_dsn', default='')
+_logger = logging.getLogger(__name__)
 
 
-class SentryMiddleware(SentryMiddlewareOriginal):
+class SentryMiddleware(aiohttp_sentry.SentryMiddleware): # For getting a correct client IP
   async def get_extra_data(self, request):
     return {
       'request': {
         'query_string': request.query_string,
-        'cookies': request.headers.get('Cookie', ''),
         'headers': dict(request.headers),
         'url': request.path,
         'method': request.method,
         'scheme': request.scheme,
         'env': {
-          'REMOTE_ADDR': request.headers.get(options.ip_header) if options.ip_header else request.transport.get_extra_info('peername')[0]
+          'REMOTE_ADDR': tools.get_remote_ip(request),
         }
       }
     }
 
 
-_logger = logging.getLogger(__name__)
-
-
 class Application(web.Application):
   def __init__(self):
+    middlewares = []
+    if options.sentry_dsn:
+      middlewares.append(SentryMiddleware({
+        'dsn': options.sentry_dsn,
+        'environment': 'vj4',
+        'debug': options.debug,
+      }))
+
     super(Application, self).__init__(
       debug=options.debug,
-      middlewares=[
-        SentryMiddleware({
-          'dsn': options.sentry_integration_dsn,
-          'environment': 'vj4:ojc'
-        })
-      ]
+      middlewares=middlewares
     )
     globals()[self.__class__.__name__] = lambda: self  # singleton
 
