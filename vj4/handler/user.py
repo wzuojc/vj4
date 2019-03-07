@@ -75,14 +75,22 @@ class UserRegisterWithCodeHandler(base.Handler):
   @base.route_argument
   @base.post_argument
   @base.sanitize
-  async def post(self, *, code: str, uname: str, password: str, verify_password: str):
+  async def post(self, *, code: str, uname: str, password: str, verify_password: str, school_id: str=''):
     doc = await token.get(code, token.TYPE_REGISTRATION)
+    sid = None
     if not doc:
       raise error.InvalidTokenError(token.TYPE_REGISTRATION, code)
     if password != verify_password:
       raise error.VerifyPasswordError()
+    if school_id.strip():
+      if not school_id.isnumeric():
+        raise error.InvalidArgumentError('school_id')
+      sid = school_id.strip()
+
     uid = await system.inc_user_counter()
     await user.add(uid, uname, password, doc['mail'], self.remote_ip)
+    if sid:
+      await user.set_by_uid(uid, ojcId=sid)
     await token.delete(code, token.TYPE_REGISTRATION)
     await self.update_session(new_saved=False, uid=uid)
     self.json_or_redirect(self.reverse_url('domain_main'))

@@ -18,7 +18,7 @@
                 {% else %}
                   {{ udoc['uname'] }}
                 {% endif %}
-                <small>({{ _('UID') }}: {{ udoc['_id'] }})</small>
+                <small>({{ _('UID') }}: {{ udoc['_id'] }}{% if udoc['ojcId'] %}, SchoolID: {{ udoc['ojcId'] }}{% endif %})</small>
               </h1>
               <p>
                 {{ _('Registered at') }} {{ datetime_span(udoc['regat']) }},
