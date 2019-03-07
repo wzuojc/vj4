@@ -13,5 +13,7 @@ GitPython
 PyYAML
 aiomongo
 yarl
-aioauth-client
 aiohttp-sentry
+
+aioauth-client
+xmltodict
