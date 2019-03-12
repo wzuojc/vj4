@@ -2,6 +2,22 @@
 {% block home_content %}
 <div class="section">
   <div class="section__header">
+    <h1 class="section__title">{{ _('Join a domain') }}</h1>
+  </div>
+  <div class="section__body">
+    <div class="row">
+      <div class="medium-10 columns">
+        <input name="home-domain--join-domain-id" placeholder="{{ _('Domain ID') }}" class="textbox">
+      </div>
+      <div class="medium-2 columns">
+        <button class="primary rounded button" id="home-domain--join-domain">{{ _('Join') }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section__header">
     <h1 class="section__title">{{ _('My Domains') }}</h1>
     <div class="section__tools">
     {% if handler.has_priv(vj4.model.builtin.PRIV_CREATE_DOMAIN) %}
