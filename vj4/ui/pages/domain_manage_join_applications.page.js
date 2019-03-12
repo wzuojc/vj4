@@ -7,6 +7,7 @@ const page = new NamedPage('domain_manage_join_applications', () => {
   const $expire = $('[name="expire"]');
   const $code = $('[name="invitation_code"]');
   const codeCharPool = "acdefghjkmnprtwxyz23478";
+  let lastRandomCode;
 
   function generateCode() {
     let text = "";
@@ -26,8 +27,9 @@ const page = new NamedPage('domain_manage_join_applications', () => {
   $('[name="method"]').change(() => {
     updateFormState();
     const method = parseInt($('[name="method"]:checked').val(), 10);
-    if ($code.val().trim().length < 1 && method === domainEnum.JOIN_METHOD_CODE) {
-      $code.val(generateCode());
+    if (($code.val().trim().length < 1 || $code.val().trim() === lastRandomCode) && method === domainEnum.JOIN_METHOD_CODE) {
+      lastRandomCode = generateCode()
+      $code.val(lastRandomCode);
     }
   });
 });
