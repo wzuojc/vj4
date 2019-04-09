@@ -28,7 +28,7 @@ const page = new NamedPage('domain_manage_join_applications', () => {
     updateFormState();
     const method = parseInt($('[name="method"]:checked').val(), 10);
     if (($code.val().trim().length < 1 || $code.val().trim() === lastRandomCode) && method === domainEnum.JOIN_METHOD_CODE) {
-      lastRandomCode = generateCode()
+      lastRandomCode = generateCode();
       $code.val(lastRandomCode);
     }
   });
