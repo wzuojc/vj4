@@ -46,6 +46,25 @@ async def add(domain_id: str, title: str, content: str, owner_uid: int,
   return pid
 
 
+# This copies contents only, data will be referenced to the source problem.
+async def copy(pdoc, dest_domain_id: str, owner_uid: int,
+               pid: document.convert_doc_id=None, hidden: bool=False):
+  data = pdoc['data']
+  src_domain_id, src_pid = pdoc['domain_id'], pdoc['doc_id']
+  if type(data) is objectid.ObjectId:
+    data = { 'domain': src_domain_id,
+             'pid': src_pid }
+  elif type(data) is dict:
+    src_domain_id, src_pid = data['domain'], data['pid']
+
+  pid = await add(domain_id=dest_domain_id, owner_uid=owner_uid,
+                  title=pdoc['title'], content=pdoc['content'],
+                  pid=pid, hidden=hidden, category=pdoc['category'],
+                  data=data)
+  await document.inc(src_domain_id, document.TYPE_PROBLEM, src_pid, 'be_copied', 1)
+  return pid
+
+
 @argmethod.wrap
 async def get(domain_id: str, pid: document.convert_doc_id, uid: int = None):
   pdoc = await document.get(domain_id, document.TYPE_PROBLEM, pid)
@@ -262,11 +281,16 @@ def delete_solution_reply(domain_id: str, psid: document.convert_doc_id, psrid: 
   return document.delete_sub(domain_id, document.TYPE_PROBLEM_SOLUTION, psid, 'reply', psrid)
 
 
-async def get_data(domain_id, pid):
-  pdoc = await get(domain_id, pid)
-  if not pdoc.get('data', None):
-    raise error.ProblemDataNotFoundError(domain_id, pid)
-  return await fs.get_meta(pdoc['data'])
+async def get_data(pdoc):
+  data = pdoc.get('data', None)
+  if not data:
+    return None
+  if type(data) is dict:
+    upper_pdoc = await get(data['domain'], data['pid'])
+    data = upper_pdoc['data']
+    if not data:
+      return None
+  return await fs.get_meta(data)
 
 
 @argmethod.wrap
@@ -294,9 +318,10 @@ async def get_data_list(last: int):
   pdocs = coll.find({'doc_type': document.TYPE_PROBLEM})
   pids = []  # with domain_id
   async for pdoc in pdocs:
-    if 'data' not in pdoc or not pdoc['data']:
+    data = await get_data(pdoc)
+    if not data:
       continue
-    date = await fs.get_datetime(pdoc['data'])
+    date = await fs.get_datetime(data)
     if not date:
       continue
     if last_datetime < date:
