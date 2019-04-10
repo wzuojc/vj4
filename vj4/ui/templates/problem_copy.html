@@ -9,7 +9,7 @@
             <div class="medium-8 columns">
               <label>
                 {{ _('Copy from') }}
-                <input name="domain_id" placeholder="{{ _('Domain ID') }}" class="textbox" autofocus>
+                <input name="src_domain_id" placeholder="{{ _('Domain ID') }}" class="textbox" autofocus>
               </label>
             </div>
             <div class="medium-2 columns">
@@ -25,7 +25,7 @@
               <label>
                 <br>
                 <label class="checkbox">
-                  <input type="checkbox" name="hidden" value="on"{% if pdoc['hidden'] %} checked{% endif %}>{{ _('Hidden') }}
+                  <input type="checkbox" name="hidden" value="on">{{ _('Hidden') }}
                 </label>
               </label>
             </div>
@@ -33,7 +33,7 @@
           <div class="row"><div class="columns">
             <label>
               {{ _('Problem ID List') }}
-              <textarea name="pids" class="textbox" style="height: 300px"></textarea>
+              <textarea name="src_pids" class="textbox" style="height: 300px"></textarea>
             </label>
           </div></div>
           <div class="row"><div class="columns">
@@ -53,9 +53,9 @@
     <div class="section side">
       <div class="section__body typo">
         <h2>{{ _('What\'s this?') }}</h2>
-        <p>{{ _('With this feature, you can copy problems that you can view from a domain to a specific domain. Title, content and other properties will be copied. Of course, test data is not included.') }}</p>
+        <p>{{ _('With this feature, you can copy problems that you can view from a domain to some other domain. Their title, content, tags and categories will be copied. However, their test data are not copied directly.') }}</p>
         <h2>{{ _('About test data') }}</h2>
-        <p>{{ _('Although test data will not be copied, test data of copied problem will be linked to the source problem if source has test data uploaded. By uploading new test data, it will not be linked anymore. Permission of linked test data follows the original one.') }}</p>
+        <p>{{ _('Instead of copying the test data directly, the test data of the copied problems will be linked to the test data of the source problems (called the source test data). Thus, the copied problems can observe the changes in the source test data. The permissions of the test data of the copied problems follow the source test data, e.g., you still might not download them but the judges can. By uploading some new test data, the link will be broken and the new test data will be used.') }}</p>
       </div>
     </div>
   </div>
