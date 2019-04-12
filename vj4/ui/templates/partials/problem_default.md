@@ -1,99 +1,39 @@
-# Background
-Special for beginners, ^_^
+# 背景
 
-# Description
-Given two integers x and y, print the sum.
+题目背景
 
-# Format
+# 描述
 
-## Input
-Two integers x and y, satisfying 0 <= x, y <= 32767.
+题目描述
 
-## Output
-One integer, the sum of x and y.
+# 格式
 
-# Sample 1
+## 输入
 
-## Input
+输入两个整数
+
+## 输出
+
+输出一个整数
+
+# 样例
+
+## 输入
+
 ```
 123 500
 ```
 
-## Output
+## 输出
+
 ```
 623
 ```
 
-# Limitation
-1s, 1024KiB for each test case.
+# 评测限制
 
-# Hint
+每个测试点 1s, 1024KiB。
 
-## Free Pascal Code
+# 来源
 
-```pascal
-var a,b:longint;
-begin
-    readln(a,b);
-    writeln(a+b);
-end.
-```
-
-## C Code
-
-```c
-#include <stdio.h>
-int main(void)
-{
-    int a, b;
-    scanf("%d%d", &a, &b);
-    printf("%d\n", a + b);
-    return 0;
-}
-```
-
-## C++ Code
-
-```cpp
-#include <iostream>
-using namespace std;
-int main()
-{
-    int a, b;
-    cin >> a >> b;
-    cout << a + b << endl;
-    return 0;
-}
-```
-
-## Python Code
-
-```python
-a, b = [int(i) for i in raw_input().split()]
-print(a + b)
-```
-
-## Java Code
-
-```java
-import java.io.*;
-import java.util.Scanner;
-
-public class Main {
-
-    /**
-     * @param args
-     * @throws IOException 
-     */
-    public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        int a = sc.nextInt();
-        int b = sc.nextInt();
-        System.out.println(a + b);
-    }
-}
-```
-
-# Source
-
-**Vijos Original**
+原创
