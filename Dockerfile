@@ -7,7 +7,8 @@ RUN npm install \
 
 # main
 FROM python:3.6-alpine3.9
-COPY --from=stage-node /app/src/vj4 /app/src/LICENSE /app/src/README.md /app/src/requirements.txt /app/src/setup.py /app/
+COPY --from=stage-node /app/src/vj4 /app/vj4
+COPY --from=stage-node /app/src/LICENSE /app/src/README.md /app/src/requirements.txt /app/src/setup.py /app/
 WORKDIR /app
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
