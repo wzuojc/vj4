@@ -10,7 +10,8 @@ FROM python:3.6-alpine3.9
 COPY --from=stage-node /app/src/vj4 /app/src/LICENSE /app/src/README.md /app/src/requirements.txt /app/
 WORKDIR /app
 
-RUN apk add --no-cache libmaxminddb \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
+    apk add --no-cache libmaxminddb \
         libmaxminddb-dev alpine-sdk git && \
     python -m pip install -r requirements.txt && \
     apk del --no-cache --purge \
