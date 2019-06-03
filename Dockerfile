@@ -20,7 +20,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 
 ENV VJ_LISTEN=http://0.0.0.0:8888
 
-ADD docker-entrypoint.py /app/src/
+ADD docker-entrypoint.py /app/
 ENTRYPOINT [ "python", "docker-entrypoint.py" ]
 
 EXPOSE 8888
