@@ -19,6 +19,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
         libmaxminddb-dev alpine-sdk git && \
     curl "http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz" | gunzip -c > GeoLite2-City.mmdb
 
+ENV GIT_PYTHON_REFRESH=quiet
 ENV VJ_LISTEN=http://0.0.0.0:8888
 
 ADD docker-entrypoint.py /app/
